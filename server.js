@@ -68,7 +68,7 @@ function main() {
   server.addService(healthCheckProto.Health.service, { check });
   server.addService(helloWorldProto.Greeter.service, { sayHello });
 
-  server.bindAsync(`0.0.0.0:${PORT}`, secureCredentials, (error, port) => {
+  server.bindAsync(`0.0.0.0:${PORT}`, insecureCredentials, (error, port) => {
     console.log('Server started, listening on port', port);
     if (error) {
       throw error;

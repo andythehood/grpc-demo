@@ -60,8 +60,8 @@ spec:
         args: [
           "--http2_port=9000",
           "--ssl_port=443",
-          "--enable_grpc_backend_ssl",
-          "--grpc_backend_ssl_root_certs_file=/etc/nginx/ssl/nginx.crt",
+          # "--enable_grpc_backend_ssl",
+          # "--grpc_backend_ssl_root_certs_file=/etc/nginx/ssl/nginx.crt",
           "--backend=grpc://ssc.tada.com.au:50051",
           "--service=hellogrpc.endpoints.argon-edge-251405.cloud.goog",
           "--rollout_strategy=managed",
