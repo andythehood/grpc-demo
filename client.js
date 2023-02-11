@@ -25,17 +25,11 @@ const makeGrpcRequest = (JWT_AUTH_TOKEN, API_KEY, HOST, GREETEE) => {
   // Import required libraries
 
   const fs = require('fs');
-  const grpc = require('grpc');
+  const grpc = require('@grpc/grpc-js');
   const path = require('path');
   const protoLoader = require('@grpc/proto-loader');
 
-  // let credentials = grpc.ServerCredentials.createSsl(
-  //   fs.readFileSync('./nginx.crt'), [{
-  //     cert_chain: fs.readFileSync('./nginx.crt'),
-  //   private_key: fs.readFileSync('./nginx.key')
-  // }], false);
-
-  let credentials = grpc.credentials.createSsl(fs.readFileSync('./nginx.crt'));
+  let credentials = grpc.credentials.createSsl(fs.readFileSync('./server.crt'));
 
   // Load protobuf spec for an example API
   const helloWorldProto = grpc.loadPackageDefinition(
@@ -91,7 +85,7 @@ const makeGrpcRequest = (JWT_AUTH_TOKEN, API_KEY, HOST, GREETEE) => {
         console.log('healthcheck status', response.status);
       }
     });
-    timerId = setTimeout(healthcheck, 2000); // (*)
+    timerId = setTimeout(healthcheck, 5000); // (*)
   }, 2000);
 };
 // [END endpoints_make_grpc_request]

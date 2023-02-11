@@ -10,8 +10,8 @@
   "author": "",
   "license": "Apache-2.0",
   "dependencies": {
-    "@grpc/proto-loader": "^0.5.3",
-    "grpc": "^1.24.9",
-    "yargs": "^15.1.0"
+    "@grpc/proto-loader": "^0.7.4",
+    "@grpc/grpc-js": "^1.8.8",
+    "yargs": "^17.6.2"
   }
 }

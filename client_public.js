@@ -25,15 +25,9 @@ const makeGrpcRequest = (JWT_AUTH_TOKEN, API_KEY, HOST, GREETEE) => {
   // Import required libraries
 
   const fs = require('fs');
-  const grpc = require('grpc');
+  const grpc = require('@grpc/grpc-js');
   const path = require('path');
   const protoLoader = require('@grpc/proto-loader');
-
-  // let credentials = grpc.ServerCredentials.createSsl(
-  //   fs.readFileSync('./nginx.crt'), [{
-  //     cert_chain: fs.readFileSync('./nginx.crt'),
-  //   private_key: fs.readFileSync('./nginx.key')
-  // }], false);
 
   let credentials = grpc.credentials.createSsl();
 

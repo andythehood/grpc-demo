@@ -1,5 +1,5 @@
 // The package @grpc/grpc-js can also be used instead of grpc here
-const grpc = require('grpc');
+const grpc = require('@grpc/grpc-js');
 const fs = require('fs');
 const protoLoader = require('@grpc/proto-loader');
 
@@ -30,11 +30,11 @@ const healthCheckProto = grpc.loadPackageDefinition(
 const PORT = process.env.PORT || 50051;
 
 let secureCredentials = grpc.ServerCredentials.createSsl(
-  fs.readFileSync('./nginx.crt'),
+  fs.readFileSync('./server.crt'),
   [
     {
-      cert_chain: fs.readFileSync('./nginx.crt'),
-      private_key: fs.readFileSync('./nginx.key'),
+      cert_chain: fs.readFileSync('./server.crt'),
+      private_key: fs.readFileSync('./server.key'),
     },
   ],
   false
