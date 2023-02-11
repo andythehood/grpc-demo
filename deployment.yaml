@@ -18,16 +18,16 @@ metadata:
   name: mygrpc-server
 spec:
   ports:
-  - port: 80
-    targetPort: 9000
-    protocol: TCP
-    name: esp
+  # - port: 80
+  #   targetPort: 9000
+  #   protocol: TCP
+  #   name: esp
   - port: 50051
     targetPort: 50051
     protocol: TCP
     name: direct
   - port: 443
-    targetPort: 443
+    targetPort: 8443
     protocol: TCP
     name: https
 
@@ -58,8 +58,8 @@ spec:
       - name: esp
         image: gcr.io/endpoints-release/endpoints-runtime:1
         args: [
-          "--http2_port=9000",
-          "--ssl_port=443",
+          # "--http2_port=9000",
+          "--ssl_port=8443",
           "--enable_grpc_backend_ssl",
           "--grpc_backend_ssl_root_certs_file=/etc/nginx/ssl/nginx.crt",
           "--backend=grpc://ssc.tada.com.au:50051",
@@ -67,8 +67,8 @@ spec:
           "--rollout_strategy=managed",
         ]
         ports:
-          - containerPort: 9000
-          - containerPort: 443
+          # - containerPort: 9000
+          - containerPort: 8443
         volumeMounts:
         - mountPath: /etc/nginx/ssl
           name: nginx-ssl

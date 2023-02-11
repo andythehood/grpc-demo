@@ -1,0 +1,15 @@
+# gRPC health check configured with NodePort for my-grpc-port
+apiVersion: v1
+kind: Service
+metadata:
+  name: mygrpc-server-nodeport
+  annotations: 
+    cloud.google.com/app-protocols: '{"my-grpc-port": "GRPC"}'
+spec:
+  type: NodePort
+  selector: 
+    app: mygrpc-server
+  ports:
+  - name: my-grpc-port
+    port: 8443
+    targetPort: 8443 
