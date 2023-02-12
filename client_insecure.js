@@ -75,6 +75,22 @@ const makeGrpcRequest = (JWT_AUTH_TOKEN, API_KEY, HOST, GREETEE) => {
     }
   });
 
+  // server streaming call
+  // var streamRequest = new RepeatHelloRequest();
+  // streamRequest.setName('World');
+  // streamRequest.setCount(5);
+
+  var stream = client.sayRepeatHello({ name: 'stream', count: 25 }, metadata);
+  stream.on('data', (response) => {
+    // console.log(response);
+    console.log(response.message);
+  });
+  stream.on('error', (err) => {
+    console.log(`Unexpected stream error: code = ${err.code}` +
+      `, message = "${err.message}"`);
+  });
+
+
   let timerId = setTimeout(function healthcheck() {
     client2.check({ service: 'fred' }, metadata, (err, response) => {
       if (err) {

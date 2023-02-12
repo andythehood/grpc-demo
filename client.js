@@ -29,7 +29,7 @@ const makeGrpcRequest = (JWT_AUTH_TOKEN, API_KEY, HOST, GREETEE) => {
   const path = require('path');
   const protoLoader = require('@grpc/proto-loader');
 
-  let credentials = grpc.credentials.createSsl(fs.readFileSync('./server.crt'));
+  let credentials = grpc.credentials.createSsl(fs.readFileSync('./grpc-server.crt'));
 
   // Load protobuf spec for an example API
   const helloWorldProto = grpc.loadPackageDefinition(
@@ -73,6 +73,17 @@ const makeGrpcRequest = (JWT_AUTH_TOKEN, API_KEY, HOST, GREETEE) => {
     if (response) {
       console.log(response.message);
     }
+  });
+
+  // server streaming call
+  var stream = client.sayRepeatHello({ name: 'stream', count: 25 }, metadata);
+  stream.on('data', (response) => {
+    // console.log(response);
+    console.log(response.message);
+  });
+  stream.on('error', (err) => {
+    console.log(`Unexpected stream error: code = ${err.code}` +
+      `, message = "${err.message}"`);
   });
 
   let timerId = setTimeout(function healthcheck() {

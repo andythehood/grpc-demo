@@ -2,6 +2,8 @@
 const grpc = require('@grpc/grpc-js');
 const fs = require('fs');
 const protoLoader = require('@grpc/proto-loader');
+var async = require('async');
+var _ = require('lodash');
 
 // const packageDefinition = protoLoader.loadSync(
 //   __dirname + '/helloworld.proto',
@@ -30,11 +32,11 @@ const healthCheckProto = grpc.loadPackageDefinition(
 const PORT = process.env.PORT || 50051;
 
 let secureCredentials = grpc.ServerCredentials.createSsl(
-  fs.readFileSync('./server.crt'),
+  fs.readFileSync('./grpc-server.crt'),
   [
     {
-      cert_chain: fs.readFileSync('./server.crt'),
-      private_key: fs.readFileSync('./server.key'),
+      cert_chain: fs.readFileSync('./grpc-server.crt'),
+      private_key: fs.readFileSync('./grpc-server.key'),
     },
   ],
   false
@@ -53,22 +55,47 @@ let insecureCredentials = grpc.ServerCredentials.createInsecure();
 //   callback(null, { result });
 // }
 
-const sayHello = (call, callback) => {
+const doSayHello = (call, callback) => {
   console.log('sayHello', call.request.name);
   callback(null, { message: `Hello ${call.request.name}` });
 };
 
-const check = (call, callback) => {
+function doSayRepeatHello(call) {
+  var senders = [];
+  function sender(name) {
+    return (callback) => {
+      call.write({
+        message: 'Hey! ' + name
+      });
+      _.delay(callback, 500); // in ms
+    };
+  }
+  for (var i = 0; i < call.request.count; i++) {
+    senders[i] = sender(call.request.name + i);
+  }
+  async.series(senders, () => {
+    // console.log('closing stream');
+    call.write({
+      message: 'Closing stream'
+    });
+    call.end();
+  });
+}
+
+const doHealthCheck = (call, callback) => {
   console.log('healthcheck', call.request.service);
   callback(null, { status: 1 });
 };
 
 function main() {
   const server = new grpc.Server();
-  server.addService(healthCheckProto.Health.service, { check });
-  server.addService(helloWorldProto.Greeter.service, { sayHello });
+  server.addService(healthCheckProto.Health.service, { check: doHealthCheck });
+  server.addService(helloWorldProto.Greeter.service, {
+    sayHello: doSayHello,
+    sayRepeatHello: doSayRepeatHello,
+  });
 
-  server.bindAsync(`0.0.0.0:${PORT}`, secureCredentials, (error, port) => {
+  server.bindAsync(`0.0.0.0:${PORT}`, insecureCredentials, (error, port) => {
     console.log('Server started, listening on port', port);
     if (error) {
       throw error;

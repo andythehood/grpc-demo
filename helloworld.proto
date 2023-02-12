@@ -34,7 +34,8 @@ package helloworld;
 // The greeting service definition.
 service Greeter {
   // Sends a greeting
-  rpc SayHello (HelloRequest) returns (HelloReply) {}
+  rpc SayHello (HelloRequest) returns (HelloReply);
+    rpc SayRepeatHello(RepeatHelloRequest) returns (stream HelloReply);
 }
 
 // The request message containing the user's name.
@@ -42,27 +43,13 @@ message HelloRequest {
   string name = 1;
 }
 
+message RepeatHelloRequest {
+  string name = 1;
+  int32 count = 2;
+}
+
 // The response message containing the greetings
 message HelloReply {
   string message = 1;
 }
 
-
-// service Health {
-//   rpc Check(HealthCheckRequest) returns (HealthCheckResponse);
-
-//   rpc Watch(HealthCheckRequest) returns (stream HealthCheckResponse);
-// }
-
-// message HealthCheckRequest {
-//   string service = 1;
-// }
-
-// message HealthCheckResponse {
-//   enum ServingStatus {
-//     UNKNOWN = 0;
-//     SERVING = 1;
-//     NOT_SERVING = 2;
-//   }
-//   ServingStatus status = 1;
-// }
